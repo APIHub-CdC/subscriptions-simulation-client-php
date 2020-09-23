@@ -1,53 +1,18 @@
-# subscriptions-simulation-client-php
+<?php
 
-This API lets you manage the subscriptions to API Hub asynchronous events. It enables you to receive notifications (asynchronous events) from Círculo de Crédito next-generation products (Open Banking &amp; Data Aggregation).
+namespace SubscripcionSimulacionClientPhp\Client;
 
-## Requisitos
+use \SubscripcionSimulacionClientPhp\Client\Configuration;
+use \SubscripcionSimulacionClientPhp\Client\ApiException;
+use \SubscripcionSimulacionClientPhp\Client\ObjectSerializer;
 
-PHP >= 7.1
+use \SubscripcionSimulacionClientPhp\Client\Api\WebHookSubscriptionsApi;
+use \SubscripcionSimulacionClientPhp\Client\Model\Subscription;
 
-### Dependencias adicionales
-- Se debe contar con las siguientes dependencias de PHP:
-    - ext-curl
-    - ext-mbstring
-- En caso de no ser así, para linux use los siguientes comandos
-```sh
-#ejemplo con php en versión 7.3 para otra versión colocar php{version}-curl
-apt-get install php7.3-curl
-apt-get install php7.3-mbstring
-```
-- Composer [vea como instalar][1]
-
-## Instalación
-
-Ejecutar: `composer install`
-
-## Guía de inicio
-
-### Paso 1. Agregar el producto a la aplicación
-
-Al iniciar sesión seguir los siguientes pasos:
-
-1.  Dar clic en la sección "**Mis aplicaciones**".
-2.  Seleccionar la aplicación.
-3.  Ir a la pestaña de "**Editar '@tuApp**' ".
-    <p align="center">
-      <img src="https://github.com/APIHub-CdC/imagenes-cdc/blob/master/edit_applications.jpg" width="900">
-    </p>
-4.  Al abrirse la ventana, seleccionar el producto.
-5.  Dar clic en el botón "**Guardar App**":
-    <p align="center">
-      <img src="https://github.com/APIHub-CdC/imagenes-cdc/blob/master/selected_product.jpg" width="400">
-    </p>
-
-### Paso 2. Capturar los datos de la petición
-
-Los siguientes datos a modificar se encuentran en **test/Api/ApiTest.php**
-
-Es importante contar con el setUp() que se encargará de inicializar la url. Modificar la URL **('the_url')** de la petición del objeto **_\$config_**, como se muestra en el siguiente fragmento de código:
-
-```php
- public function setUp()
+class WebHookSubscriptionsApiTest extends \PHPUnit_Framework_TestCase
+{
+    
+    public function setUp()
     {
         $config = new Configuration();
         $config->setHost('the_url');
@@ -55,10 +20,8 @@ Es importante contar con el setUp() que se encargará de inicializar la url. Mod
         $client = new \GuzzleHttp\Client();
         $this->apiInstance = new WebHookSubscriptionsApi($client,$config);
     }  
-/**
-* Este es el método que se será ejecutado en la prueba ubicado en path/to/repository/test/Api/ApiTest.php
-*/
-public function testPostSubscription()
+
+    public function testPostSubscription()
     {
         try {
             $enrollment = new Subscription();
@@ -113,14 +76,15 @@ public function testPostSubscription()
             echo 'Exception when calling WebHookSubscriptionsApiTest->deleteSubscription: ', $e->getMessage(), PHP_EOL;
         }
     }
-```
 
-## Pruebas unitarias
+    private function gen_uuid() {
+        return sprintf( '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
+            mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff ),
+            mt_rand( 0, 0xffff ),
+            mt_rand( 0, 0x0fff ) | 0x4000,
+            mt_rand( 0, 0x3fff ) | 0x8000,
+            mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff )
+        );
+    }
 
-Para ejecutar las pruebas unitarias:
-
-```sh
-./vendor/bin/phpunit
-```
-
-[1]: https://getcomposer.org/doc/00-intro.md#installation-linux-unix-macos
+}
